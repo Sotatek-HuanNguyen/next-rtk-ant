@@ -1,15 +1,12 @@
 import AdminLayout from '@/layouts/admin-layout.tsx';
 import { GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-const Home = () => {
-  const router = useRouter();
-  if (typeof window !== 'undefined') {
-    router.push('/dashboard');
-  }
-  return <></>;
+const DashBoard = () => {
+  const { t } = useTranslation(['common']);
+  return <div>{t('DashBoard')}</div>;
 };
 
 export async function getServerSideProps({ locale }: GetServerSidePropsContext) {
@@ -20,5 +17,6 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
   };
 }
 
-Home.layout = AdminLayout;
-export default Home;
+DashBoard.layout = AdminLayout;
+
+export default DashBoard;

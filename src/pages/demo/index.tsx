@@ -1,15 +1,18 @@
+import SearchIcon from '@/assets/images/svg/icon_search.svg';
+import { BaseButton } from '@/components/common/base-button';
 import AdminLayout from '@/layouts/admin-layout.tsx';
 import { GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
 import React from 'react';
 
-const Home = () => {
-  const router = useRouter();
-  if (typeof window !== 'undefined') {
-    router.push('/dashboard');
-  }
-  return <></>;
+const Demo = () => {
+  return (
+    <div>
+      <BaseButton icon={<SearchIcon />} size="middle" type="primary">
+        button
+      </BaseButton>
+    </div>
+  );
 };
 
 export async function getServerSideProps({ locale }: GetServerSidePropsContext) {
@@ -20,5 +23,6 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
   };
 }
 
-Home.layout = AdminLayout;
-export default Home;
+Demo.layout = AdminLayout;
+
+export default Demo;
