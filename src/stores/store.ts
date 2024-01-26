@@ -3,7 +3,8 @@ import { createWrapper } from 'next-redux-wrapper';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer } from 'redux-persist';
 
 import { userApi } from './auth/auth.api';
-import authReducer from './auth/auth.slice';
+// import authReducer from './auth/auth.slice';
+import allReducer from './slices';
 import storage from './sync-storage';
 
 const persistConfig = {
@@ -14,7 +15,8 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   [userApi.reducerPath]: userApi.reducer,
-  auth: authReducer,
+
+  ...allReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

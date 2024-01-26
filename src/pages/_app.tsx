@@ -1,8 +1,10 @@
+import { useAppSelector } from '@/hooks/reduxHooks';
+import { ThemeType } from '@/interfaces';
 import { store } from '@/stores/store';
+import { getThemeConfig } from '@/styles/themeConfig';
 import theme from '@/theme/themeConfig';
 import { Page } from '@/types/page';
-import { ConfigProvider } from 'antd';
-import 'antd/dist/reset.css';
+import { ConfigProvider, ThemeConfig } from 'antd';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import NextNProgress from 'nextjs-progressbar';
@@ -13,8 +15,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import RootLayout from '../layouts';
 
-require('@/assets/styles/styles.less');
-
 type Props = AppProps & {
   Component: Page;
 };
@@ -22,6 +22,7 @@ type Props = AppProps & {
 const persistor = persistStore(store);
 
 function App({ Component, pageProps }: Props) {
+  const theme = store.getState().theme;
   const Layout =
     (Component as Page).layout ||
     (({ children }: { children: ReactNode }) => <RootLayout>{children}</RootLayout>);
@@ -31,7 +32,7 @@ function App({ Component, pageProps }: Props) {
       <PersistGate loading={null} persistor={persistor}>
         <Layout>
           <NextNProgress />
-          <ConfigProvider theme={theme}>
+          <ConfigProvider theme={getThemeConfig(theme as any)}>
             <Component {...pageProps} />
           </ConfigProvider>
         </Layout>
