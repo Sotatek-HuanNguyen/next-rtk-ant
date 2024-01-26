@@ -1,1 +1,1 @@
-export type Severity = 'success' | 'error' | 'info' | 'warning';
+export interface demo {}

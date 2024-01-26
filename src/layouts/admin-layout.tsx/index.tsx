@@ -1,87 +1,41 @@
-import { DashboardOutlined, SettingOutlined } from '@ant-design/icons';
-import { Layout, Menu, MenuProps } from 'antd';
-import { WithRouterProps } from 'next/dist/client/with-router';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { NextRouter, withRouter } from 'next/router';
-import React, { useState } from 'react';
+import { References } from '@/components/common/References/References';
+import { Header } from '@/components/layouts/header/Header';
+import MainContent from '@/components/layouts/main/MainContent/MainContent';
+import { MainHeader } from '@/components/layouts/main/MainHeader/MainHeader';
+import * as S from '@/components/layouts/main/MainLayout/MainLayout.styles';
+import MainSider from '@/components/layouts/main/sider/MainSider/MainSider';
+import { useResponsive } from '@/hooks/useResponsive';
+import React, { ReactNode, useEffect, useState } from 'react';
 
-import classes from './index.module.less';
-
-const { Header, Sider, Content } = Layout;
-
-interface Router extends NextRouter {
-  path: string;
-  breadcrumbName: string;
+interface MainLayoutProps {
+  children: ReactNode;
 }
 
-interface Props extends WithRouterProps {
-  router: Router;
-}
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const [isTwoColumnsLayout, setIsTwoColumnsLayout] = useState(true);
+  const [siderCollapsed, setSiderCollapsed] = useState(true);
+  const { isDesktop } = useResponsive();
 
-const AppLayout = (props: React.PropsWithChildren<Props>) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const router = useRouter();
-  const [current, setCurrent] = useState<string>();
-
-  const onClick: MenuProps['onClick'] = (e) => {
-    setCurrent(e.key);
-    router.push(e.key);
-    console.log('🚀 ~ file: index.tsx:32 ~ AppLayout ~ e:', e);
-  };
-
-  const onChangeIsCollapsed = (isCollapsed: boolean) => {
-    setIsCollapsed(isCollapsed);
-  };
-
-  const items: MenuProps['items'] = [
-    {
-      label: 'Dashboard',
-      key: '/dashboard',
-      icon: <DashboardOutlined />,
-    },
-    {
-      label: 'Submenu',
-      key: 'sub-menu',
-      icon: <SettingOutlined />,
-      children: [
-        {
-          label: 'Demo components',
-          key: '/demo',
-        },
-      ],
-    },
-  ];
+  const toggleSider = () => setSiderCollapsed(!siderCollapsed);
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header className={classes.header}>Header</Header>
-
-      <Layout hasSider>
-        <Sider
-          className={classes.slider}
-          collapsible
-          collapsed={isCollapsed}
-          onCollapse={onChangeIsCollapsed}
-        >
-          <Link href="/menu1">
-            <div className="App-logo" />
-          </Link>
-
-          <Menu
-            onClick={onClick}
-            defaultOpenKeys={['/dashboard']}
-            selectedKeys={[current || router.asPath]}
-            mode="inline"
-            items={items}
+    <S.LayoutMaster>
+      <MainSider isCollapsed={siderCollapsed} setCollapsed={setSiderCollapsed} />
+      <S.LayoutMain>
+        <MainHeader isTwoColumnsLayout={isTwoColumnsLayout}>
+          <Header
+            toggleSider={toggleSider}
+            isSiderOpened={!siderCollapsed}
+            isTwoColumnsLayout={isTwoColumnsLayout}
           />
-        </Sider>
-
-        <Content className={classes.content}>{props.children}</Content>
-      </Layout>
-    </Layout>
+        </MainHeader>
+        <MainContent id="main-content" $isTwoColumnsLayout={isTwoColumnsLayout}>
+          <div>{children}</div>
+          {!isTwoColumnsLayout && <References />}
+        </MainContent>
+      </S.LayoutMain>
+    </S.LayoutMaster>
   );
 };
 
-export default withRouter(AppLayout);
+export default MainLayout;
